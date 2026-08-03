@@ -1,0 +1,212 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Roles {
+  ADMIN
+  SUPERADMIN
+  MENTOR
+  ASSISTENT
+  STUDENT
+}
+
+enum CourceLevel {
+  BEGINNER
+  ELEMENTRY
+  PRE_INTERMIDIATE
+  INTERMIDIATE
+  ADVANCED
+}
+
+enum Answer {
+  answerA
+  answerB
+  answerC
+  answerD
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String   @unique
+  role      Roles
+  password  String
+  email     String? @unique
+  file      String?
+  create_at DateTime @default(now())
+  update_at DateTime @updatedAt
+
+
+  mentor  Mentor[]
+  cources Cources[]
+
+  @@map("users")
+}
+
+model Mentor {
+  id     Int @id @default(autoincrement())
+  userId Int
+
+  experience  Float?
+  job         String?
+  web_link    String?
+  description String?
+  facebook    String?
+  telegram    String?
+  linkedIn    String?
+  instagtam   String?
+  github      String?
+
+  cources Cources[]
+  user    User      @relation(fields: [userId], references: [id])
+
+  @@map("mentor")
+}
+
+model Assistent {
+  id       Int    @id @default(autoincrement())
+  name     String
+  phone    String @unique
+  password String
+
+  courceId Int
+  cource   Cources @relation(fields: [courceId], references: [id])
+
+  create_at DateTime @default(now())
+  update_at DateTime @updatedAt
+
+  @@map("assistent")
+}
+
+model Categories {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  create_at DateTime @default(now())
+  update_at DateTime @updatedAt
+
+  cources  Cources[]
+  sections Sections[]
+
+  @@map("categories")
+}
+
+model Cources {
+  id          Int         @id @default(autoincrement())
+  banner      String
+  intro_video String
+  name        String      @unique
+  description String
+  level       CourceLevel
+  price       Decimal
+
+  categoryId Int
+  mentorId   Int
+  userId     Int?
+
+  create_at DateTime @default(now())
+  update_at DateTime @updatedAt
+
+  category Categories @relation(fields: [categoryId], references: [id])
+  mentor   Mentor     @relation(fields: [mentorId], references: [id])
+
+  sections   Sections[]
+  assistents Assistent[]
+  users      User[]
+
+  @@map("cources")
+}
+
+model Sections {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  create_at DateTime @default(now())
+  update_at DateTime @updatedAt
+
+  categoryId Int?
+  courcesId  Int?
+
+  category Categories? @relation(fields: [categoryId], references: [id])
+  cources  Cources?    @relation(fields: [courcesId], references: [id])
+
+  lessons Lessons[]
+
+  @@map("sections")
+}
+
+model Lessons {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  sectionId   Int
+  description String
+  introVideo  String?
+
+  create_at DateTime @default(now())
+  update_at DateTime @updatedAt
+
+  section   Sections    @relation(fields: [sectionId], references: [id])
+  materials Materials[]
+  homeworks Homeworks[]
+  exams     Exam[]
+
+  @@map("lessons")
+}
+
+model Materials {
+  id          Int    @id @default(autoincrement())
+  lessonId    Int
+  description String
+
+  create_at DateTime @default(now())
+  update_at DateTime @updatedAt
+
+  lesson        Lessons        @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  materialFiles MaterialFile[]
+
+  @@map("materials")
+}
+
+model MaterialFile {
+  id         Int    @id @default(autoincrement())
+  materialId Int
+  file       String
+
+  material Materials @relation(fields: [materialId], references: [id], onDelete: Cascade)
+
+  @@map("material_file")
+}
+
+model Homeworks {
+  id          Int      @id @default(autoincrement())
+  lessonId    Int
+  description String
+  file        String?
+  create_at   DateTime @default(now())
+  update_at   DateTime @updatedAt
+
+  lesson Lessons @relation(fields: [lessonId], references: [id])
+
+  @@map("homeworks")
+}
+
+model Exam {
+  id       Int    @id @default(autoincrement())
+  lessonId Int
+  question String
+  variantA String
+  variantB String
+  variantC String
+  variantD String
+  answer   Answer
+
+  create_at DateTime @default(now())
+  update_at DateTime @updatedAt
+
+  lesson Lessons @relation(fields: [lessonId], references: [id])
+
+  @@map("exam")
+}
