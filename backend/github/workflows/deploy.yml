@@ -22,7 +22,7 @@ jobs:
             mkdir -p /home/ubuntu
             cd /home/ubuntu
 
-            if [ ! -d "/ubuntu/lms" ]; then
+            if [ ! -d "lms/.git" ]; then
               echo "Cloning repository!" 
               git clone https://github.com/xdislom/lms.git
             else
