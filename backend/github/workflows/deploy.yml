@@ -19,12 +19,12 @@ jobs:
           key: ${{ secrets.SSH_KEY }} 
           script: |
             echo "Creating project folder if it doesn't exist!"
-            mkdir -p /ubuntu
-            cd /ubuntu
+            mkdir -p /home/ubuntu
+            cd /home/ubuntu
 
-            if [ ! -d "https://github.com/xdislom//lms.git" ]; then
+            if [ ! -d "/ubuntu/lms" ]; then
               echo "Cloning repository!" 
-              git clone https://github.com/xdislom/lms
+              git clone https://github.com/xdislom/lms.git
             else
               echo "Pulling latest changes!"
               cd    /ubuntu/lms
