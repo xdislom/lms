@@ -31,7 +31,7 @@ jobs:
               git pull origin main  
             fi
 
-            cd /home/ubuntu/lms
+            cd /home/ubuntu/lms/backend
 
             echo "Stopping containers"
             docker compose down || true
