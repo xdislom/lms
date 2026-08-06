@@ -26,6 +26,6 @@ async function bootstrap() {
   });
 
   // await redis.connect();
-  await app.listen(process.env.PORT ?? 3001);
+  await app.listen(process.env.PORT ?? 4000);
 }
 bootstrap()

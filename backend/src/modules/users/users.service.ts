@@ -393,12 +393,51 @@ export class StudentService {
     }
 
     async updateStudent(payload: UpdateStudentDto, id: number) {
+        const existStudent = await this.prisma.user.findUnique({
+            where: {
+                id: id
+            }
+        })
+
+        if (!existStudent) {
+            throw new NotFoundException('Student not found with this id')
+        }
+
+        if (payload.phone) {
+            const existPhone = await this.prisma.user.findUnique({
+                where: {
+                    phone: payload.phone
+                }
+            })
+
+            if (existPhone && existPhone.id !== id) {
+                throw new ConflictException('This phone number already exist')
+            }
+        }
+
+        if(payload.email) {
+            const existEmail = await this.prisma.user.findUnique({
+                where: {
+                    email: payload.email
+                }
+            })
+    
+            if (existEmail && existEmail.id !== id) {
+                throw new ConflictException('This email already exist')
+            }
+        }
+
+
+
         await this.prisma.user.update({
             where: {
                 id: id
             },
             data: {
-                ...payload
+                name: payload.name,
+                password: payload.password,
+                phone: payload.phone,
+                email: payload.email
             }
         })
 

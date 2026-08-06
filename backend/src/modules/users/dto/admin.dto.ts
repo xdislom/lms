@@ -123,6 +123,9 @@ export class StudentsDto {
     @ApiProperty({ example: 'Qwerty' })
     @IsString()
     password!: string
+
+    @IsEmail()
+    email!: string
 }
 
 export class UpdateStudentDto extends PartialType(StudentsDto) { }
