@@ -16,7 +16,7 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }} 
+          key: ${{ secrets.SSH_KEY }}
           script: |
             echo "Creating project folder if it doesn't exist!"
             mkdir -p /home/ubuntu
@@ -27,10 +27,12 @@ jobs:
               git clone https://github.com/xdislom/lms.git
             else
               echo "Pulling latest changes!"
-              cd    /home/ubuntu/lms/backend
+              cd    /home/ubuntu/lms
               git pull origin main  
             fi
-  
+
+            cd /home/ubuntu/lms
+
             echo "Stopping containers"
             docker compose down || true
 
@@ -38,4 +40,4 @@ jobs:
             docker compose build 
 
             echo "Running containers"
-            docker compose up -d 
+            docker compose up -d
