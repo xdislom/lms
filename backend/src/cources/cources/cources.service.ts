@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/core/database/prisma.service';
 import { CourcesDto, UpdateCourcesDto } from './dto/cources.dto';
 import { Roles } from '@prisma/client';
@@ -147,6 +147,16 @@ export class CourcesService {
     }
 
     async updateCource(payload: UpdateCourcesDto, id: number) {
+        const exsistName = await this.prisma.cources.findUnique({
+            where: {
+                name: payload.name
+            }
+        })
+
+        if (exsistName?.name === payload.name) {
+            throw new ConflictException('This name is already exsist')
+        }
+        
         const cource = await this.prisma.cources.update({
             where: {
                 id: id
