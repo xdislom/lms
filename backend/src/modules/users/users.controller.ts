@@ -11,6 +11,41 @@ import { RolesGuard } from 'src/common/guards/roles-guard';
 
 
 @ApiBearerAuth()
+@Controller('student')
+@UseGuards(AuthGuard, RolesGuard)
+@Role(Roles.ADMIN, Roles.SUPERADMIN, Roles.MENTOR)
+export class StudentController {
+    constructor(private readonly studentService: StudentService) { }
+
+    @Get('student')
+    @ApiOperation({ summary: 'ADMIN, SUPERADMIN, MENTOR' })
+    getAllStudents() {
+        return this.studentService.getAllStudents()
+    }
+
+    @Get('student/:id')
+    @ApiOperation({ summary: 'ADMIN, SUPERADMIN, MENTOR' })
+    getOneStudent(@Param('id', ParseIntPipe) id: number) {
+        return this.studentService.getOneStudent(id)
+    }
+
+    @Patch('student/:id')
+    @ApiOperation({ summary: 'ADMIN, SUPERADMIN, MENTOR' })
+    updateStudent(
+        @Body() payload: UpdateStudentDto,
+        @Param('id', ParseIntPipe) id: number
+    ) {
+        return this.studentService.updateStudent(payload, id)
+    }
+
+    @Delete('student/:id')
+    @ApiOperation({ summary: 'ADMIN, SUPERADMIN, MENTOR' })
+    deleteStudent(@Param('id', ParseIntPipe) id: number) {
+        return this.studentService.deleteStudents(id)
+    }
+}
+
+@ApiBearerAuth()
 @Controller("admin")
 @UseGuards(AuthGuard, RolesGuard)
 @Role(Roles.ADMIN, Roles.SUPERADMIN)
@@ -82,49 +117,6 @@ export class AdminController {
     }
 }
 
-
-@ApiBearerAuth()
-@Controller('assistent')
-@UseGuards(AuthGuard, RolesGuard)
-@Role(Roles.ADMIN, Roles.SUPERADMIN)
-export class AssistentController {
-    constructor(private readonly assistentService: AssistentService) { }
-
-    @Get('assistent')
-    @ApiOperation({ summary: 'ADMIN, SUPERADMIN' })
-    getAllAssistents() {
-        return this.assistentService.gelAllAssistents()
-    }
-
-    @Get('assistent/:id')
-    @ApiOperation({ summary: 'ADMIN, SUPERADMIN' })
-    getOneAssistent(@Param('id', ParseIntPipe) id: number) {
-        return this.assistentService.getOneAssistent(id)
-    }
-
-    @Post('assistent')
-    @ApiOperation({ summary: 'ADMIN, SUPERADMIN' })
-    createAssistent(@Body() payload: AssistentDto) {
-        return this.assistentService.createAssistent(payload)
-    }
-
-    @Patch('assistent/:id')
-    @ApiOperation({ summary: 'ADMIN, SUPERADMIN' })
-    updateAssistent(
-        @Body() payload: UpdateAssistentDto,
-        @Param('id', ParseIntPipe) id: number
-    ) {
-        return this.assistentService.updateAssistent(payload, id)
-    }
-
-    @Delete('assistent/:id')
-    @ApiOperation({ summary: 'ADMIN, SUPERADMIN' })
-    deleteAssistent(@Param('id', ParseIntPipe) id: number) {
-        return this.assistentService.deleteAssistent(id)
-    }
-}
-
-
 @ApiBearerAuth()
 @Controller('mentor')
 @UseGuards(AuthGuard, RolesGuard)
@@ -166,38 +158,43 @@ export class MentorController {
     }
 }
 
-
 @ApiBearerAuth()
-@Controller('student')
+@Controller('assistent')
 @UseGuards(AuthGuard, RolesGuard)
-@Role(Roles.ADMIN, Roles.SUPERADMIN, Roles.MENTOR)
-export class StudentController {
-    constructor(private readonly studentService: StudentService) { }
+@Role(Roles.ADMIN, Roles.SUPERADMIN)
+export class AssistentController {
+    constructor(private readonly assistentService: AssistentService) { }
 
-    @Get('student')
-    @ApiOperation({ summary: 'ADMIN, SUPERADMIN, MENTOR' })
-    getAllStudents() {
-        return this.studentService.getAllStudents()
+    @Get('assistent')
+    @ApiOperation({ summary: 'ADMIN, SUPERADMIN' })
+    getAllAssistents() {
+        return this.assistentService.gelAllAssistents()
     }
 
-    @Get('student/:id')
-    @ApiOperation({ summary: 'ADMIN, SUPERADMIN, MENTOR' })
-    getOneStudent(@Param('id', ParseIntPipe) id: number) {
-        return this.studentService.getOneStudent(id)
+    @Get('assistent/:id')
+    @ApiOperation({ summary: 'ADMIN, SUPERADMIN' })
+    getOneAssistent(@Param('id', ParseIntPipe) id: number) {
+        return this.assistentService.getOneAssistent(id)
     }
 
-    @Patch('student/:id')
-    @ApiOperation({ summary: 'ADMIN, SUPERADMIN, MENTOR' })
-    updateStudent(
-        @Body() payload: UpdateStudentDto,
+    @Post('assistent')
+    @ApiOperation({ summary: 'ADMIN, SUPERADMIN' })
+    createAssistent(@Body() payload: AssistentDto) {
+        return this.assistentService.createAssistent(payload)
+    }
+
+    @Patch('assistent/:id')
+    @ApiOperation({ summary: 'ADMIN, SUPERADMIN' })
+    updateAssistent(
+        @Body() payload: UpdateAssistentDto,
         @Param('id', ParseIntPipe) id: number
     ) {
-        return this.studentService.updateStudent(payload, id)
+        return this.assistentService.updateAssistent(payload, id)
     }
 
-    @Delete('student/:id')
-    @ApiOperation({ summary: 'ADMIN, SUPERADMIN, MENTOR' })
-    deleteStudent(@Param('id', ParseIntPipe) id: number) {
-        return this.studentService.deleteStudents(id)
+    @Delete('assistent/:id')
+    @ApiOperation({ summary: 'ADMIN, SUPERADMIN' })
+    deleteAssistent(@Param('id', ParseIntPipe) id: number) {
+        return this.assistentService.deleteAssistent(id)
     }
 }

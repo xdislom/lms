@@ -39,9 +39,9 @@ import { EmailModule } from './common/email/email.module';
     }),
 
     PrismaModule,
+    SeederModule,
     AuthModule,
     AdminModule,
-    SeederModule,
     CourcesModule,
     CategoryModule,
     SectionsModule,
