@@ -46,18 +46,12 @@ export const AdminSidebar = () => {
       children: [
         { label: 'Barcha kurslar', href: '/admin/courses' },
         { label: 'Kategoriyalar', href: '/admin/categories' },
-        { label: 'Dropdown item', href: '#' },
-        { label: 'Darslar', href: '#' },
-        { label: 'Vazifalar', href: '#' },
-        { label: 'Testlar', href: '#' },
-        { label: 'Savol-javoblar', href: '#' },
-        { label: 'Uyga vazifalar', href: '#' },
       ],
     },
     {
       label: "To'lovlar",
       icon: <Calculator size={18} />,
-      href: '#',
+      href: '/admin/tolovlar',
     },
     {
       label: 'Izohlar',

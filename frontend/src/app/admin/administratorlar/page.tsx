@@ -62,7 +62,8 @@ export default function AdministratorlarPage() {
     setIsSaving(true);
     try {
       if (editingAdmin) {
-        await adminsApi.update(editingAdmin.id.toString(), formData);
+        const updateData = { name: formData.name, phone: formData.phone, ...(formData.password ? { password: formData.password } : {}) };
+        await adminsApi.update(editingAdmin.id.toString(), updateData);
       } else {
         await adminsApi.create({ ...formData, role: 'admin' });
       }
@@ -100,7 +101,7 @@ export default function AdministratorlarPage() {
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-200">
             {row.file ? (
-              <img src={`http://localhost:3001/uploads/images/${row.file}`} alt={row.name} className="w-full h-full object-cover" />
+              <img src={`http://localhost:4000/uploads/images/${row.file}`} alt={row.name} className="w-full h-full object-cover" />
             ) : (
               <img src="https://ui-avatars.com/api/?name=Admin&background=random" alt="Avatar" className="w-full h-full object-cover" />
             )}

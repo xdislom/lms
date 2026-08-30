@@ -21,4 +21,9 @@ export const mentorsApi = {
   delete: async (id: string): Promise<void> => {
     await api.delete(`/mentor/mentor/${id}`);
   },
+  getAllMyCourses: async (): Promise<any> => {
+    // Note: URL matches backend spelling (getAllMyCources)
+    const response = await api.get('/mentor/getAllMyCources');
+    return response.data.data || response.data;
+  },
 };

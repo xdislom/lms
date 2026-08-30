@@ -235,7 +235,7 @@ export default function CoursesPage() {
       render: (row: Course) => (
         <div className="w-16 h-10 rounded-lg overflow-hidden bg-gradient-to-r from-blue-400 to-indigo-500">
           {row.banner && row.banner !== '' && row.banner !== 'default.jpg' ? (
-            <img src={`http://localhost:3001/uploads/images/${row.banner}`} alt="Banner" className="w-full h-full object-cover" />
+            <img src={`http://localhost:4000/uploads/images/${row.banner}`} alt="Banner" className="w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full" />
           )}
@@ -246,7 +246,7 @@ export default function CoursesPage() {
       key: 'name',
       header: 'Kurs nomi',
       render: (row: Course) => (
-        <Link href={`/admin/courses/${row.id}`} className="font-semibold text-slate-800 hover:text-blue-500 transition-colors">
+        <Link href={`/admin/courses/${row.id}/sections`} className="font-semibold text-slate-800 hover:text-blue-500 transition-colors">
           {row.name}
         </Link>
       ),
@@ -255,9 +255,9 @@ export default function CoursesPage() {
       key: 'sections',
       header: "Bo'limlar",
       render: (row: Course) => (
-        <Link href={`/admin/courses/${row.id}/sections`} className="flex items-center gap-2 text-slate-600 hover:text-blue-500 transition-colors">
-          <span className="text-[13px] font-medium">Batafsil</span>
+        <Link href={`/admin/courses/${row.id}/sections`} className="flex items-center gap-2 text-blue-500 hover:text-blue-700 transition-colors">
           <FileText className="w-4 h-4" />
+          <span className="text-[13px] font-medium">Bo'limlar</span>
         </Link>
       ),
     },
@@ -382,7 +382,7 @@ export default function CoursesPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-1.5">
                 <Label className="text-sm font-semibold text-slate-700">Darajasi</Label>
-                <Select value={formData.level} onValueChange={(v) => setFormData({ ...formData, level: v })}>
+                <Select value={formData.level} onValueChange={(v) => setFormData({ ...formData, level: v ?? '' })}>
                   <SelectTrigger className="h-11 rounded-xl border-slate-200 focus:border-blue-400">
                     <SelectValue placeholder="Tanlang" />
                   </SelectTrigger>
@@ -417,7 +417,7 @@ export default function CoursesPage() {
             {/* Kategoriya */}
             <div className="flex flex-col gap-1.5">
               <Label className="text-sm font-semibold text-slate-700">Kategoriya</Label>
-              <Select value={formData.categoryId} onValueChange={(v) => setFormData({ ...formData, categoryId: v })}>
+              <Select value={formData.categoryId} onValueChange={(v) => setFormData({ ...formData, categoryId: v ?? '' })}>
                 <SelectTrigger className="h-11 rounded-xl border-slate-200 focus:border-blue-400">
                   <SelectValue placeholder="Tanlang" />
                 </SelectTrigger>
@@ -432,7 +432,7 @@ export default function CoursesPage() {
             {/* Mentor */}
             <div className="flex flex-col gap-1.5">
               <Label className="text-sm font-semibold text-slate-700">Mentor</Label>
-              <Select value={formData.mentorId} onValueChange={(v) => setFormData({ ...formData, mentorId: v })}>
+              <Select value={formData.mentorId} onValueChange={(v) => setFormData({ ...formData, mentorId: v ?? '' })}>
                 <SelectTrigger className="h-11 rounded-xl border-slate-200 focus:border-blue-400">
                   <SelectValue placeholder="Tanlang" />
                 </SelectTrigger>

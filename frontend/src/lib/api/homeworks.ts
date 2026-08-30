@@ -8,7 +8,7 @@ export const homeworksApi = {
   },
   create: async (data: FormData): Promise<Homework> => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
-    const res = await fetch('http://localhost:3001/api/v1/homeworks/homeworks', {
+    const res = await fetch('http://localhost:4000/api/v1/homeworks/homeworks', {
       method: 'POST',
       headers: token ? { Authorization: `Bearer ${token}` } : {},
       body: data,

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { PageHeader } from '@/components/shared/PageHeader';
 import { DataTable } from '@/components/shared/DataTable';
 import { Button } from '@/components/ui/button';
@@ -98,12 +97,9 @@ export default function CategoriesPage() {
       key: 'name', 
       header: 'Kategoriya nomi',
       render: (row: Category) => (
-        <Link
-          href={`/admin/categories/${row.id}/sections`}
-          className="font-semibold text-slate-800 hover:text-blue-500 transition-colors"
-        >
+        <span className="font-semibold text-slate-800">
           {row.name}
-        </Link>
+        </span>
       )
     },
     { 

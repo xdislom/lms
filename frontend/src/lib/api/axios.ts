@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Get base URL from env or use default localhost (NestJS default)
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api/v1';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api/v1';
 
 export const api = axios.create({
   baseURL: BASE_URL,
@@ -33,10 +33,12 @@ api.interceptors.response.use(
   },
   async (error) => {
     if (error.response?.status === 401) {
-      // Handle unauthorized (e.g. redirect to login or refresh token)
       if (typeof window !== 'undefined') {
-        localStorage.removeItem('access_token');
-        window.location.href = '/login';
+        const isAdminPage = window.location.pathname.startsWith('/admin');
+        if (isAdminPage) {
+          localStorage.removeItem('access_token');
+          window.location.href = '/login';
+        }
       }
     }
     return Promise.reject(error);
