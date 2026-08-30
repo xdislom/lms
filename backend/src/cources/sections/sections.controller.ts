@@ -10,7 +10,7 @@ import { Role } from 'src/decorator/roles';
 @ApiBearerAuth()
 @Controller('sections')
 @UseGuards(AuthGuard, RolesGuard)
-@Role(Roles.ADMIN, Roles.SUPERADMIN)
+@Role(Roles.ADMIN, Roles.SUPERADMIN, Roles.STUDENT)
 export class SectionsController {
     constructor(private readonly sectionsService: SectionsService) { }
 
@@ -23,11 +23,11 @@ export class SectionsController {
 
 
     @ApiOperation({summary: `${Roles.ADMIN}, ${Roles.MENTOR}`})
-    @Get("category/:categoryId")
-    getSectionsByCategory(
-        @Param("categoryId", ParseIntPipe) categoryId: number,
+    @Get("cource/:courceId")
+    getSectionsByCource(
+        @Param("courceId", ParseIntPipe) courceId: number,
     ) {
-        return this.sectionsService.getSectionsCategory(categoryId);
+        return this.sectionsService.getSectionsCource(courceId);
     }
 
 

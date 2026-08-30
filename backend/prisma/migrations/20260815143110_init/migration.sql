@@ -23,6 +23,17 @@ CREATE TABLE "users" (
 );
 
 -- CreateTable
+CREATE TABLE "resetPass" (
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "otp" TEXT NOT NULL,
+    "expiresIn" TIMESTAMP(3) NOT NULL,
+    "creat_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "resetPass_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "mentor" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
@@ -73,7 +84,6 @@ CREATE TABLE "cources" (
     "price" DECIMAL(65,30) NOT NULL,
     "categoryId" INTEGER NOT NULL,
     "mentorId" INTEGER NOT NULL,
-    "userId" INTEGER,
     "create_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "update_at" TIMESTAMP(3) NOT NULL,
 
@@ -84,10 +94,9 @@ CREATE TABLE "cources" (
 CREATE TABLE "sections" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
+    "courcesId" INTEGER NOT NULL,
     "create_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "update_at" TIMESTAMP(3) NOT NULL,
-    "categoryId" INTEGER,
-    "courcesId" INTEGER,
 
     CONSTRAINT "sections_pkey" PRIMARY KEY ("id")
 );
@@ -153,16 +162,11 @@ CREATE TABLE "exam" (
     CONSTRAINT "exam_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
-CREATE TABLE "_CourcesToUser" (
-    "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL,
-
-    CONSTRAINT "_CourcesToUser_AB_pkey" PRIMARY KEY ("A","B")
-);
-
 -- CreateIndex
 CREATE UNIQUE INDEX "users_phone_key" ON "users"("phone");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "assistent_phone_key" ON "assistent"("phone");
@@ -176,8 +180,8 @@ CREATE UNIQUE INDEX "cources_name_key" ON "cources"("name");
 -- CreateIndex
 CREATE UNIQUE INDEX "lessons_name_key" ON "lessons"("name");
 
--- CreateIndex
-CREATE INDEX "_CourcesToUser_B_index" ON "_CourcesToUser"("B");
+-- AddForeignKey
+ALTER TABLE "resetPass" ADD CONSTRAINT "resetPass_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "mentor" ADD CONSTRAINT "mentor_userId_fkey" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -192,16 +196,13 @@ ALTER TABLE "cources" ADD CONSTRAINT "cources_categoryId_fkey" FOREIGN KEY ("cat
 ALTER TABLE "cources" ADD CONSTRAINT "cources_mentorId_fkey" FOREIGN KEY ("mentorId") REFERENCES "mentor"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "sections" ADD CONSTRAINT "sections_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "categories"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "sections" ADD CONSTRAINT "sections_courcesId_fkey" FOREIGN KEY ("courcesId") REFERENCES "cources"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "sections" ADD CONSTRAINT "sections_courcesId_fkey" FOREIGN KEY ("courcesId") REFERENCES "cources"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "lessons" ADD CONSTRAINT "lessons_sectionId_fkey" FOREIGN KEY ("sectionId") REFERENCES "sections"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "lessons" ADD CONSTRAINT "lessons_sectionId_fkey" FOREIGN KEY ("sectionId") REFERENCES "sections"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "materials" ADD CONSTRAINT "materials_lessonId_fkey" FOREIGN KEY ("lessonId") REFERENCES "lessons"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "materials" ADD CONSTRAINT "materials_lessonId_fkey" FOREIGN KEY ("lessonId") REFERENCES "lessons"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "material_file" ADD CONSTRAINT "material_file_materialId_fkey" FOREIGN KEY ("materialId") REFERENCES "materials"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -211,9 +212,3 @@ ALTER TABLE "homeworks" ADD CONSTRAINT "homeworks_lessonId_fkey" FOREIGN KEY ("l
 
 -- AddForeignKey
 ALTER TABLE "exam" ADD CONSTRAINT "exam_lessonId_fkey" FOREIGN KEY ("lessonId") REFERENCES "lessons"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_CourcesToUser" ADD CONSTRAINT "_CourcesToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "cources"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_CourcesToUser" ADD CONSTRAINT "_CourcesToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

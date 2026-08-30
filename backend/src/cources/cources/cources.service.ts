@@ -1,7 +1,6 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/core/database/prisma.service';
 import { CourcesDto, UpdateCourcesDto } from './dto/cources.dto';
-import { Roles } from '@prisma/client';
 
 @Injectable()
 export class CourcesService {
@@ -12,20 +11,24 @@ export class CourcesService {
             select: {
                 id: true,
                 banner: true,
+                intro_video: true,
                 name: true,
                 level: true,
                 price: true,
+                mentor: {
+                    select:{
+                        user: {
+                            select: {
+                                id: true,
+                                name: true
+                            }
+                        }
+                    }
+                },
                 category: {
                     select: {
                         id: true,
                         name: true,
-                    }
-                },
-                users: {
-                    select: {
-                        id: true,
-                        name: true,
-                        phone: true
                     }
                 }
             }
@@ -39,7 +42,7 @@ export class CourcesService {
     }
 
     async getOneCource(id: number) {
-        const cource = await this.prisma.cources.findFirst({
+        const cource = await this.prisma.cources.findMany({
             where: {
                 id: id,
             },
@@ -52,15 +55,10 @@ export class CourcesService {
                 level: true,
                 price: true,
 
-                users: {
+                sections: {
                     select: {
                         id: true,
                         name: true,
-                        phone: true,
-                        role: true,
-                    },
-                    where: {
-                        role: Roles.STUDENT
                     }
                 },
 
@@ -107,30 +105,30 @@ export class CourcesService {
             throw new BadRequestException('Intro video is required')
         }
 
-        const category = await this.prisma.categories.findFirst({
+        const category = await this.prisma.categories.findUnique({
             where: {
                 id: payload.categoriesId
             }
         })
 
         if (!category) {
-            throw new NotFoundException('Category not found')
+            throw new NotFoundException('Category not found with this id')
         }
 
-        const mentor = await this.prisma.mentor.findFirst({
+        const mentor = await this.prisma.mentor.findUnique({
             where: {
                 userId: payload.mentorId
             },
         })
 
         if (!mentor) {
-            throw new NotFoundException('Mentor not found')
+            throw new NotFoundException('Mentor not found with this id')
         }
 
         await this.prisma.cources.create({
             data: {
-                banner: banner.originalname,
-                intro_video: introVideo.originalname,
+                banner: banner.filename,
+                intro_video: introVideo.filename,
                 name: payload.name,
                 description: payload.description,
                 level: payload.level,
@@ -142,7 +140,7 @@ export class CourcesService {
 
         return {
             success: true,
-            messsage: 'Cource create successfully!'
+            messsage: 'Cource created successfully!'
         }
     }
 

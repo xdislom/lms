@@ -11,7 +11,7 @@ export class SectionsService {
             select: {
                 id: true,
                 name: true,
-                category: {
+                cources: {
                     select: {
                         id: true,
                         name: true,
@@ -26,10 +26,10 @@ export class SectionsService {
         }
     }
 
-    async getSectionsCategory(categoryId: number) {
+    async getSectionsCource(courceId: number) {
         const sections = await this.prisma.sections.findMany({
             where: {
-                categoryId: categoryId,
+                courcesId: courceId,
             },
 
             select: {
@@ -53,7 +53,7 @@ export class SectionsService {
             select: {
                 id: true,
                 name: true,
-                category: {
+                cources: {
                     select: {
                         id: true,
                         name: true,
@@ -72,7 +72,7 @@ export class SectionsService {
         await this.prisma.sections.create({
             data: {
                 name: payload.name,
-                categoryId: payload.categoryId
+                courcesId: payload.courceId
             }
         })
 

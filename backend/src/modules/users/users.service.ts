@@ -1,5 +1,5 @@
-import { ConflictException, Injectable, NotFoundException, UseGuards } from '@nestjs/common';
-import { AdminDto, AssistentDto, MentorDto, UpdateAdminDto, UpdateAssistentDto, UpdateMentorDto, UpdateStudentDto } from './dto/admin.dto';
+import { BadRequestException, ConflictException, Injectable, NotFoundException, UseGuards } from '@nestjs/common';
+import { AdminDto, AssistentDto, MentorDto, StudentsDto, UpdateAdminDto, UpdateAssistentDto, UpdateMentorDto, UpdateStudentDto } from './dto/admin.dto';
 import { PrismaService } from 'src/core/database/prisma.service';
 import { Roles } from '@prisma/client';
 import hashPassword from 'src/common/config/hash';
@@ -110,8 +110,6 @@ export class MentorService {
                 name: true,
                 phone: true,
                 role: true,
-                password: true,
-                create_at: true,
                 mentor: {
                     select: {
                         experience: true,
@@ -199,14 +197,49 @@ export class MentorService {
     }
 
     async updateMentor(payload: UpdateMentorDto, id: number) {
+        const mentor = await this.prisma.user.findUnique({
+            where: {
+                id: id
+            }
+        })
+
+        if (!mentor) {
+            throw new NotFoundException('This mentor not found with this id')
+        }
+
         await this.prisma.user.update({
             where: {
                 id: id
             },
             data: {
-                ...payload
+                name: payload.name,
+                phone: payload.phone,
+                email: payload.email,
+
+                ...(payload.password && {
+                    password: await hashPassword(payload.password)
+                })
             }
         })
+
+
+        await this.prisma.mentor.update({
+            where: {
+                userId: id,
+            },
+            data: {
+                experience: payload.experience ? Number(payload.experience) : undefined,
+
+                job: payload.job,
+                web_link: payload.web_link,
+                description: payload.description,
+                facebook: payload.facebook,
+                telegram: payload.telegram,
+                linkedIn: payload.linkedIn,
+                instagtam: payload.instagtam,
+                github: payload.github,
+            },
+        });
 
         return {
             success: true,
@@ -240,16 +273,13 @@ export class AssistentService {
     constructor(private prisma: PrismaService) { }
 
     async gelAllAssistents() {
-        const assistents = await this.prisma.user.findMany({
-            where: {
-                role: Roles.ASSISTENT
-            },
+        const assistents = await this.prisma.assistent.findMany({
             select: {
                 id: true,
                 name: true,
                 phone: true,
                 password: true,
-                cources: {
+                cource: {
                     select: {
                         id: true,
                         name: true,
@@ -265,7 +295,7 @@ export class AssistentService {
     }
 
     async getOneAssistent(id: number) {
-        const assistent = await this.prisma.user.findFirst({
+        const assistent = await this.prisma.assistent.findFirst({
             where: {
                 id: id
             }
@@ -278,7 +308,7 @@ export class AssistentService {
     }
 
     async createAssistent(payload: AssistentDto) {
-        const existAssistent = await this.prisma.user.findFirst({
+        const existAssistent = await this.prisma.assistent.findFirst({
             where: {
                 phone: payload.phone
             }
@@ -288,27 +318,11 @@ export class AssistentService {
             throw new ConflictException('Assistent already exist with this phone')
         }
 
-        const course = await this.prisma.cources.findUnique({
-            where: {
-                id: payload.courceId
-            },
-        });
-
-        if (!course) {
-            throw new NotFoundException("Course not found");
-        }
-
-        await this.prisma.user.create({
+        await this.prisma.assistent.create({
             data: {
                 name: payload.name,
                 phone: payload.phone,
-                password: await hashPassword(payload.password),
-                cources: {
-                    connect: {
-                        id: payload.courceId,
-                    },
-                },
-                role: Roles.ASSISTENT
+                password: await hashPassword(payload.password)
             }
         })
 
@@ -319,7 +333,7 @@ export class AssistentService {
     }
 
     async updateAssistent(payload: UpdateAssistentDto, id: number) {
-        await this.prisma.user.update({
+        await this.prisma.assistent.update({
             where: {
                 id: id
             },
@@ -335,7 +349,7 @@ export class AssistentService {
     }
 
     async deleteAssistent(id: number) {
-        await this.prisma.user.delete({
+        await this.prisma.assistent.delete({
             where: {
                 id: id
             }
@@ -343,7 +357,7 @@ export class AssistentService {
 
         return {
             success: true,
-            message: 'Mentor deleted successfully!'
+            message: 'Assistent deleted successfully!'
         }
     }
 }
@@ -362,13 +376,7 @@ export class StudentService {
                 id: true,
                 name: true,
                 phone: true,
-                role: true,
-                cources: {
-                    select: {
-                        id: true,
-                        name: true
-                    }
-                }
+                role: true
             }
         })
 
@@ -389,6 +397,32 @@ export class StudentService {
         return {
             success: true,
             data: student
+        }
+    }
+
+    async createStudent(payload: StudentsDto) {
+        const existStudent = await this.prisma.user.findUnique({
+            where: {
+                phone: payload.phone
+            }
+        })
+
+        if(existStudent) {
+            throw new BadRequestException('This phone number already exist with this student')
+        }
+
+        await this.prisma.user.create({
+            data: {
+                name: payload.name,
+                phone: payload.phone,
+                password: payload.password,
+                role: Roles.STUDENT
+            }
+        })
+
+        return {
+            success: true,
+            message: 'Student created successfully!'
         }
     }
 
@@ -415,20 +449,6 @@ export class StudentService {
             }
         }
 
-        if(payload.email) {
-            const existEmail = await this.prisma.user.findUnique({
-                where: {
-                    email: payload.email
-                }
-            })
-    
-            if (existEmail && existEmail.id !== id) {
-                throw new ConflictException('This email already exist')
-            }
-        }
-
-
-
         await this.prisma.user.update({
             where: {
                 id: id
@@ -437,7 +457,6 @@ export class StudentService {
                 name: payload.name,
                 password: payload.password,
                 phone: payload.phone,
-                email: payload.email
             }
         })
 
@@ -448,6 +467,12 @@ export class StudentService {
     }
 
     async deleteStudents(id: number) {
+        await this.prisma.purchasedCource.deleteMany({
+            where: {
+                userId: id
+            }
+        })
+
         await this.prisma.user.delete({
             where: {
                 id: id

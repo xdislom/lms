@@ -13,7 +13,7 @@ import { Role } from 'src/decorator/roles';
 @ApiBearerAuth()
 @Controller('lessons')
 @UseGuards(AuthGuard, RolesGuard)
-@Role(Roles.ADMIN, Roles.SUPERADMIN)
+@Role(Roles.ADMIN, Roles.SUPERADMIN, Roles.STUDENT)
 export class LessonsController {
     constructor(private readonly lessonsService: LessonsService) { }
 

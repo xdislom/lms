@@ -39,12 +39,6 @@ export class AssistentDto {
     @IsString()
     @IsNotEmpty()
     password!: string
-
-    @ApiProperty({ example: '1' })
-    @Type(() => Number)
-    @IsNumber()
-    @IsNotEmpty()
-    courceId!: number
 }
 
 export class UpdateAssistentDto extends PartialType(AssistentDto) { }
@@ -123,9 +117,6 @@ export class StudentsDto {
     @ApiProperty({ example: 'Qwerty' })
     @IsString()
     password!: string
-
-    @IsEmail()
-    email!: string
 }
 
 export class UpdateStudentDto extends PartialType(StudentsDto) { }

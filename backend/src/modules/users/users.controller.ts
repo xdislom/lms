@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { AssistentService, MentorService, StudentService, UserService } from './users.service';
-import { AdminDto, AssistentDto, MentorDto, UpdateAdminDto, UpdateAssistentDto, UpdateMentorDto, UpdateStudentDto } from './dto/admin.dto';
+import { AdminDto, AssistentDto, MentorDto, StudentsDto, UpdateAdminDto, UpdateAssistentDto, UpdateMentorDto, UpdateStudentDto } from './dto/admin.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
@@ -8,7 +8,6 @@ import { Roles } from '@prisma/client';
 import { Role } from 'src/decorator/roles';
 import { AuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/common/guards/roles-guard';
-
 
 @ApiBearerAuth()
 @Controller('student')
@@ -21,6 +20,12 @@ export class StudentController {
     @ApiOperation({ summary: 'ADMIN, SUPERADMIN, MENTOR' })
     getAllStudents() {
         return this.studentService.getAllStudents()
+    }
+
+    @Post('student')
+    @ApiOperation({ summary: 'ADMIN, SUPERADMIN, MENTOR' })
+    createStudent(@Body() payload: StudentsDto) {
+        return this.studentService.createStudent(payload)
     }
 
     @Get('student/:id')

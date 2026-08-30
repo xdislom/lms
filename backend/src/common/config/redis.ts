@@ -1,13 +1,13 @@
-// import { createClient } from "redis";
+import { createClient } from "redis";
 
-// export const redis = createClient({
-//     url: process.env.REDIS_URL
-// });
+export const redis = createClient({
+    url: process.env.REDIS_URL
+});
 
-// redis.on("connect", ()=> {
-//     console.log("Redis connected")
-// });
+redis.on("connect", ()=> {
+    console.log("Redis connected")
+});
 
-// redis.on("error", ()=> {
-//     console.log("Redis disconnected")
-// })
+redis.on("error", ()=> {
+    console.log("Redis disconnected")
+})

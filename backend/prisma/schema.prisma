@@ -14,6 +14,17 @@ enum Roles {
   STUDENT
 }
 
+enum Status {
+  ACTIVE
+  INACTIVE
+  PENDING
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+}
+
 enum CourceLevel {
   BEGINNER
   ELEMENTRY
@@ -30,26 +41,55 @@ enum Answer {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  phone     String   @unique
-  role      Roles
-  password  String
-  email     String? @unique
-  file      String?
+  id               Int     @id @default(autoincrement())
+  name             String
+  phone            String  @unique
+  role             Roles
+  password         String
+  email            String? @unique
+  file             String?
+  image            String?
+  status           Status  @default(ACTIVE)
+
   create_at DateTime @default(now())
   update_at DateTime @updatedAt
 
-
-  mentor  Mentor[]
-  cources Cources[]
+  mentor           Mentor[]
+  resetPass        ResetPass[]
+  purchasedCources PurchasedCource[]
+  telegramOtps     TelegramOtp[]
 
   @@map("users")
 }
 
+model TelegramOtp {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  otp       String
+  expiresIn DateTime
+  createdAt DateTime @default(now())
+  verified  Boolean  @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model ResetPass {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  otp       String
+  expiresIn DateTime
+  creat_at  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("resetPass")
+}
+
 model Mentor {
   id     Int @id @default(autoincrement())
-  userId Int
+  userId Int @unique
 
   experience  Float?
   job         String?
@@ -73,8 +113,8 @@ model Assistent {
   phone    String @unique
   password String
 
-  courceId Int
-  cource   Cources @relation(fields: [courceId], references: [id])
+  courceId Int?
+  cource   Cources? @relation(fields: [courceId], references: [id])
 
   create_at DateTime @default(now())
   update_at DateTime @updatedAt
@@ -88,8 +128,7 @@ model Categories {
   create_at DateTime @default(now())
   update_at DateTime @updatedAt
 
-  cources  Cources[]
-  sections Sections[]
+  cources Cources[]
 
   @@map("categories")
 }
@@ -102,10 +141,10 @@ model Cources {
   description String
   level       CourceLevel
   price       Decimal
+  published   Boolean     @default(true)
 
   categoryId Int
   mentorId   Int
-  userId     Int?
 
   create_at DateTime @default(now())
   update_at DateTime @updatedAt
@@ -113,25 +152,35 @@ model Cources {
   category Categories @relation(fields: [categoryId], references: [id])
   mentor   Mentor     @relation(fields: [mentorId], references: [id])
 
-  sections   Sections[]
-  assistents Assistent[]
-  users      User[]
+  sections         Sections[]
+  assistents       Assistent[]
+  purchasedCources PurchasedCource[]
 
   @@map("cources")
+}
+
+model PurchasedCource {
+  courceId    Int
+  userId      Int
+  status      PaymentStatus @default(PENDING)
+  purchasedAt DateTime      @default(now())
+
+  cource Cources @relation(references: [id], fields: [courceId], onDelete: Cascade)
+  user   User    @relation(references: [id], fields: [userId])
+
+  @@id([userId, courceId])
 }
 
 model Sections {
   id   Int    @id @default(autoincrement())
   name String
 
+  courcesId Int
+
   create_at DateTime @default(now())
   update_at DateTime @updatedAt
 
-  categoryId Int?
-  courcesId  Int?
-
-  category Categories? @relation(fields: [categoryId], references: [id])
-  cources  Cources?    @relation(fields: [courcesId], references: [id])
+  cources Cources @relation(fields: [courcesId], references: [id], onDelete: Cascade)
 
   lessons Lessons[]
 
@@ -148,7 +197,8 @@ model Lessons {
   create_at DateTime @default(now())
   update_at DateTime @updatedAt
 
-  section   Sections    @relation(fields: [sectionId], references: [id])
+  section Sections @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+
   materials Materials[]
   homeworks Homeworks[]
   exams     Exam[]

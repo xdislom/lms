@@ -14,7 +14,7 @@ import { Role } from 'src/decorator/roles';
 @ApiBearerAuth()
 @Controller('materials')
 @UseGuards(AuthGuard, RolesGuard)
-@Role(Roles.ADMIN, Roles.SUPERADMIN)
+@Role(Roles.ADMIN, Roles.SUPERADMIN, Roles.STUDENT)
 export class MaterialsController {
     constructor(private readonly materialsService: MaterialsService) { }
 

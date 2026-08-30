@@ -10,7 +10,7 @@ export class SectionsDto {
     @ApiProperty({example: 2})
     @Type(() => Number)
     @IsNumber()
-    categoryId!: number   
+    courceId!: number   
 }
 
 export class UpdateSectionDto extends PartialType(SectionsDto) { }

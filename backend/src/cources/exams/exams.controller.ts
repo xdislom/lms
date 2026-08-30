@@ -10,7 +10,7 @@ import { ExamDto, UpdateExamDto } from './dto/exam.dto';
 @ApiBearerAuth()
 @Controller('exams')
 @UseGuards(AuthGuard, RolesGuard)
-@Role(Roles.ADMIN, Roles.SUPERADMIN)
+@Role(Roles.ADMIN, Roles.SUPERADMIN, Roles.STUDENT)
 export class ExamsController {
     constructor(private readonly examService: ExamsService) {}
 

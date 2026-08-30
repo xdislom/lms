@@ -14,7 +14,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 @ApiBearerAuth()
 @Controller('homeworks')
 @UseGuards(AuthGuard, RolesGuard)
-@Role(Roles.ADMIN, Roles.SUPERADMIN)
+@Role(Roles.ADMIN, Roles.SUPERADMIN, Roles.STUDENT)
 export class HomeworksController {
     constructor(private readonly homeworkService: HomeworksService) { }
 

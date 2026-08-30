@@ -16,6 +16,9 @@ import { HomeworksModule } from './cources/homeworks/homeworks.module';
 import { AdminModule } from './modules/users/users.module';
 import { ExamsModule } from './cources/exams/exams.module';
 import { EmailModule } from './common/email/email.module';
+import { BotModule } from './bot/bot.module';
+import { MentorModule } from './mentor_panel/mentor/mentor.module';
+import { PurchaseCourceModule } from './purchase-cource/purchase-cource.module';
 
 @Module({
   imports: [
@@ -49,7 +52,10 @@ import { EmailModule } from './common/email/email.module';
     MaterialsModule,
     HomeworksModule,
     ExamsModule,
-    EmailModule
+    EmailModule,
+    BotModule,
+    MentorModule,
+    PurchaseCourceModule
   ],
 })
 export class AppModule {}

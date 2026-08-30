@@ -3,6 +3,8 @@ import { AppModule } from './app.module';
 import { SwaggerModule } from '@nestjs/swagger';
 import { config } from './common/config/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { join } from 'path';
+import * as express from "express"
 // import { redis } from './common/config/redis';
 
 async function bootstrap() {
@@ -16,6 +18,11 @@ async function bootstrap() {
       transform:true
     })
   )
+
+  app.use(
+  '/uploads',
+  express.static(join(process.cwd(), 'src/uploads')),
+);
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger', app, documentFactory);

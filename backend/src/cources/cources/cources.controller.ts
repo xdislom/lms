@@ -10,10 +10,7 @@ import { AuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { Role } from 'src/decorator/roles';
 
 
-@ApiBearerAuth()
 @Controller('cources')
-@UseGuards(AuthGuard, RolesGuard)
-@Role(Roles.ADMIN, Roles.SUPERADMIN, Roles.MENTOR)
 export class CourcesController {
     constructor(private readonly courcesService: CourcesService) { }
 
@@ -29,6 +26,9 @@ export class CourcesController {
         return this.courcesService.getOneCource(id)
     }
 
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard, RolesGuard)
+    @Role(Roles.ADMIN, Roles.SUPERADMIN, Roles.MENTOR)
     @Post('cources')
     @ApiOperation({ summary: 'ADMIN, SUPERADMIN' })
     @ApiConsumes('multipart/form-data')
@@ -120,6 +120,9 @@ export class CourcesController {
         return this.courcesService.createCource(payload, files);
     }
 
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard, RolesGuard)
+    @Role(Roles.ADMIN, Roles.SUPERADMIN, Roles.MENTOR)
     @Patch('cources/:id')
     @ApiOperation({ summary: 'ADMIN, SUPERADMIN' })
     updateCource(
@@ -129,6 +132,9 @@ export class CourcesController {
         return this.courcesService.updateCource(payload, id)
     }
 
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard, RolesGuard)
+    @Role(Roles.ADMIN, Roles.SUPERADMIN, Roles.MENTOR)
     @Delete('cources/:id')
     @ApiOperation({ summary: 'ADMIN, SUPERADMIN' })
     deleteCource(@Param('id', ParseIntPipe) id: number) {

@@ -9,7 +9,6 @@ export class AuthDto {
     name!: string
 
     @ApiProperty({ example: 'string' })
-    @IsMobilePhone("uz-UZ")
     @IsPhoneNumber()
     phone!: string
 
@@ -21,19 +20,25 @@ export class AuthDto {
     @ApiProperty({ example: '3' })
     @Type(() => Number)
     @IsNumber()
-    courceId!: Number
+    courceId?: Number
+}
 
-    @ApiProperty({ example: 'example@gmail.com' })
-    @IsEmail()
-    email!: string
+export class VerifyOTP {
+    @ApiProperty({example: "+99899000000"})
+    @IsString()
+    phone!: string
+
+    @ApiProperty({example: "123456"})
+    @IsString()
+    otp!: string
 }
 
 export class LoginDto {
     @ApiProperty({example: '+998997652928'})
     @IsString()
-    phone!: string;
+    phone!: string
 
     @ApiProperty({example: 'Islom15'})
     @IsString()
-    password!: string;
+    password!: string
 }
