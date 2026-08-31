@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { PurchaseCourceService } from './purchase-cource.service';
 import { PurchaseDto } from './dto/purchaseCource.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';

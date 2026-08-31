@@ -75,10 +75,51 @@ export default function CourseDetails() {
     });
   };
 
-  const handleBuy = () => {
-    localStorage.setItem('pendingCourseId', params.id);
-    localStorage.setItem('pendingCoursePrice', String(course?.price ?? 0));
-    router.push('/register');
+  const [buying, setBuying] = useState(false);
+  const [bought, setBought] = useState(false);
+  const [buyError, setBuyError] = useState('');
+
+  const handleBuy = async () => {
+    const token = localStorage.getItem('access_token');
+    const userStr = localStorage.getItem('user');
+    
+    // Agar ro'yxatdan o'tmagan bo'lsa registerga jo'natamiz
+    if (!token || !userStr) {
+      localStorage.setItem('pendingCourseId', params.id);
+      router.push('/register');
+      return;
+    }
+
+    const user = JSON.parse(userStr);
+    if (!user?.id) return;
+
+    setBuying(true);
+    setBuyError('');
+    try {
+      await purchasesApi.create({
+        userId: user.id,
+        courceId: Number(params.id),
+      });
+      setBought(true);
+    } catch (err: any) {
+      console.error('Buy error:', err);
+      const errorMsg = err.response?.data?.message;
+      
+      // Xatolikni parse qilish
+      if (Array.isArray(errorMsg)) {
+        setBuyError(errorMsg.join(', '));
+      } else if (typeof errorMsg === 'string') {
+        if (errorMsg.includes('already purchased')) {
+          setBuyError("Siz bu kursni allaqachon xarid qilgansiz!");
+        } else {
+          setBuyError(errorMsg);
+        }
+      } else {
+         setBuyError("Xatolik yuz berdi");
+      }
+    } finally {
+      setBuying(false);
+    }
   };
 
   if (loading) {
@@ -276,12 +317,23 @@ export default function CourseDetails() {
                 </div>
 
                 {/* Buy Button */}
-                <button
-                  onClick={handleBuy}
-                  className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-lg text-sm transition-colors"
-                >
-                  Sotib olish
-                </button>
+                {buyError && (
+                  <p className="text-red-500 text-xs text-center mb-3 font-medium">{buyError}</p>
+                )}
+                {bought ? (
+                  <div className="w-full bg-green-50 border border-green-200 text-green-700 font-bold py-3.5 rounded-lg text-sm flex items-center justify-center gap-2">
+                    <CheckCircle size={18} />
+                    So'rov yuborildi!
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleBuy}
+                    disabled={buying}
+                    className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-lg text-sm transition-colors disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {buying ? 'Yuborilmoqda...' : 'Sotib olish'}
+                  </button>
+                )}
               </div>
             </div>
 

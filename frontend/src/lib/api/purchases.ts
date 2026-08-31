@@ -11,8 +11,8 @@ export const purchasesApi = {
     return response.data.data || response.data;
   },
 
-  create: async (data: { userId: number; courceId: number; price: number }): Promise<any> => {
-    const body = { courceId: data.courceId, price: data.price };
+  create: async (data: { userId: number; courceId: number }): Promise<any> => {
+    const body = { courceId: data.courceId };
     console.log('🛒 Purchase create request:', body);
     try {
       const response = await api.post('/purchase-cource', body);
@@ -29,8 +29,8 @@ export const purchasesApi = {
     return response.data.data || response.data;
   },
 
-  delete: async (id: number): Promise<void> => {
-    await api.delete(`/purchase-cource/${id}`);
+  delete: async (userId: number, courceId: number): Promise<void> => {
+    await api.delete(`/purchase-cource/${userId}/${courceId}/delete`);
   },
 };
 

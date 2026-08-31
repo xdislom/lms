@@ -45,6 +45,9 @@ export class PurchaseCourceService {
     async getAllPurchases(id: number) {
         return await this.prisma.purchasedCource.findMany({
             where: {
+                status: {
+                    not: 'DELETED'
+                },
                 userId: id
             },
             include: {

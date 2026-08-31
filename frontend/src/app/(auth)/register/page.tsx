@@ -13,7 +13,7 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const [form, setForm] = useState({ name: '', phone: '', password: '', courceId: 3 });
+  const [form, setForm] = useState({ name: '', phone: '', password: '' });
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
@@ -29,7 +29,13 @@ export default function RegisterPage() {
     setError('');
     setIsLoading(true);
     try {
-      await authApi.register(form);
+      const pendingCourseId = localStorage.getItem('pendingCourseId');
+      const payload = {
+        ...form,
+        courceId: pendingCourseId ? Number(pendingCourseId) : undefined
+      };
+      
+      await authApi.register(payload);
       setShowModal(true);
     } catch (err: any) {
       console.error(err);
@@ -70,24 +76,9 @@ export default function RegisterPage() {
             localStorage.setItem('user', JSON.stringify(userData));
             console.log('👤 User:', userData);
 
-            // Pending kursni sotib olish
-            const pendingCourseId = localStorage.getItem('pendingCourseId');
-            const pendingCoursePrice = localStorage.getItem('pendingCoursePrice');
-            if (pendingCourseId && userData.id) {
-              try {
-                await purchasesApi.create({
-                  userId: userData.id,
-                  courceId: Number(pendingCourseId),
-                  price: Number(pendingCoursePrice ?? 0),
-                });
-                console.log('🛒 Kurs sotib olindi:', pendingCourseId);
-              } catch (purchaseErr) {
-                console.error('Purchase error:', purchaseErr);
-              } finally {
-                localStorage.removeItem('pendingCourseId');
-                localStorage.removeItem('pendingCoursePrice');
-              }
-            }
+            // Backend /auth/register ni o'zida courceId ni qabul qilib purchase yaratadi,
+            // shuning uchun bu yerda yana API chaqirmaymiz. Faqat tozalab qo'yamiz.
+            localStorage.removeItem('pendingCourseId');
           }
         } catch (loginErr) {
           console.error('Auto-login error:', loginErr);

@@ -23,6 +23,7 @@ enum Status {
 enum PaymentStatus {
   PENDING
   COMPLETED
+  DELETED
 }
 
 enum CourceLevel {

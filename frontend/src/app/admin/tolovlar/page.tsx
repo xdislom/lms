@@ -88,10 +88,15 @@ export default function TolovlarPage() {
     if (selectedId === null) return;
     setDeletingId(selectedId);
     try {
-      // NOTE: Update API if a real delete endpoint is added that accepts two params
-      // await purchasesApi.delete(userId, courceId); 
+      const [userIdStr, courceIdStr] = selectedId.split('-');
+      const userId = Number(userIdStr);
+      const courceId = Number(courceIdStr);
+      
+      await purchasesApi.delete(userId, courceId); 
+      
       setData(prev => prev.filter(item => `${item.userId}-${item.courceId}` !== selectedId));
       showToast("O'chirildi", 'success');
+      await fetchData();
     } catch (e: any) {
       showToast(e?.response?.data?.message || "O'chirishda xato yuz berdi", 'error');
     } finally {
