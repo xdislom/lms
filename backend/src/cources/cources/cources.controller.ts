@@ -27,7 +27,7 @@ export class CourcesController {
         return this.courcesService.getOneCource(id)
     }
 
-    @ApiBearerAuth()
+    @ApiBearerAuth() 
     @UseGuards(AuthGuard, RolesGuard)
     @Role(Roles.ADMIN, Roles.SUPERADMIN, Roles.MENTOR)
     @Post('cources')
