@@ -26,7 +26,7 @@ export class CourcesController {
     getOneCource(@Param('id', ParseIntPipe) id: number) {
         return this.courcesService.getOneCource(id)
     }
-
+ 
     @ApiBearerAuth() 
     @UseGuards(AuthGuard, RolesGuard)
     @Role(Roles.ADMIN, Roles.SUPERADMIN, Roles.MENTOR)
