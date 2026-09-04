@@ -261,7 +261,7 @@ export default function CourseDetailPage() {
                                 {(m.materialFiles || []).map((f) => (
                                   <a
                                     key={f.id}
-                                    href={'http://localhost:4000/uploads/files/' + f.file}
+                                    href={'http://localhost:4000/uploads/materials/' + f.file}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-600 text-[12px] font-medium rounded-lg hover:bg-blue-100"
@@ -284,7 +284,7 @@ export default function CourseDetailPage() {
                               <p className="text-[13px] font-medium text-slate-700">{hw.description}</p>
                               {hw.file && (
                                 <a
-                                  href={'http://localhost:4000/uploads/files/' + hw.file}
+                                  href={'http://localhost:4000/uploads/homeworks/' + hw.file}
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-600 text-[12px] font-medium rounded-lg"

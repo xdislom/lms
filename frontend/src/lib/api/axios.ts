@@ -15,8 +15,13 @@ api.interceptors.request.use(
     // try to get from localStorage if it's running in browser.
     if (typeof window !== 'undefined') {
       const token = localStorage.getItem('access_token');
-      if (token && config.headers) {
-        config.headers.Authorization = `Bearer ${token}`;
+      if (token) {
+        if (config.headers && typeof config.headers.set === 'function') {
+          config.headers.set('Authorization', `Bearer ${token}`);
+        } else {
+          config.headers = config.headers || {};
+          config.headers['Authorization'] = `Bearer ${token}`;
+        }
       }
     }
     return config;
@@ -34,11 +39,9 @@ api.interceptors.response.use(
   async (error) => {
     if (error.response?.status === 401) {
       if (typeof window !== 'undefined') {
-        const isAdminPage = window.location.pathname.startsWith('/admin');
-        if (isAdminPage) {
-          localStorage.removeItem('access_token');
-          window.location.href = '/login';
-        }
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
       }
     }
     return Promise.reject(error);

@@ -8,6 +8,7 @@ import { Roles } from '@prisma/client';
 import { RolesGuard } from 'src/common/guards/roles-guard';
 import { AuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { Role } from 'src/decorator/roles';
+import { join } from 'path';
 
 
 @Controller('cources')
@@ -42,9 +43,9 @@ export class CourcesController {
                 storage: diskStorage({
                     destination: (req, file, cb) => {
                         if (file.fieldname === 'banner') {
-                            cb(null, './src/uploads/images');
+                            cb(null, join(process.cwd(), 'src/uploads/images'))
                         } else {
-                            cb(null, './src/uploads/videos');
+                            cb(null, join(process.cwd(), './src/uploads/videos'))
                         }
                     },
 

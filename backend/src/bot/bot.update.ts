@@ -16,16 +16,16 @@ export class BotUpdate implements OnModuleInit {
     onModuleInit() {
         this.bot.catch((err: any, ctx) => {
             if (err.response && err.response.error_code === 403) {
-                console.warn(`Foydalanuvchi botni bloklagan: ${ctx.from?.id}`);
+                console.warn(`Foydalanuvchi botni bloklagan: ${ctx.from?.id}`)
             } else {
-                console.error(`Xatolik yuz berdi (${ctx.updateType}):`, err);
+                console.error(`Xatolik yuz berdi (${ctx.updateType}):`, err)
             }
-        });
+        })
     }
 
     @Start()
     async start(@Ctx() ctx: BotContext) {
-        ctx.session.step = Step.start;
+        ctx.session.step = Step.start
         await ctx.reply(
             "Assalomu aleykum Hurmatli Mijoz 😊\n\n Telefon raqamingizni jonating va tastiqlash kodingizni oling✅",
             Markup.keyboard([
@@ -38,25 +38,25 @@ export class BotUpdate implements OnModuleInit {
 
     @On("contact")
     async giveCode(@Ctx() ctx: BotContext) {
-        const contact = (ctx.message as any)?.contact;
+        const contact = (ctx.message as any)?.contact
 
         if (!contact) {
-            return;
+            return
         }
 
-        const phone = contact.phone_number;
+        const phone = contact.phone_number
 
-        const user = await this.botService.findUser(phone);
+        const user = await this.botService.findUser(phone)
 
         if (!user) {
-            await ctx.reply("❌ Sizning telefon raqamingiz bazada yo'q");
-            return;
+            await ctx.reply("❌ Sizning telefon raqamingiz bazada yo'q")
+            return
         }
 
-        const code = randomInt(100000, 1000000).toString();
+        const code = randomInt(100000, 1000000).toString()
 
-        await this.botService.createTelegramOtp(user.id, code);
+        await this.botService.createTelegramOtp(user.id, code)
 
-        await ctx.reply(`Sizning tasdiqlash kodingiz:\n\n${code}`);
+        await ctx.reply(`Sizning tasdiqlash kodingiz:\n\n${code}`)
     }
 }

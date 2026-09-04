@@ -212,7 +212,7 @@ export default function RegisterPage() {
             </div>
 
             <p className="text-xs text-slate-600 leading-relaxed mb-6">
-              Tasdiqlash kodi kiritilgan telefon raqamining telegram akkaunti orqali telegram bot: <span className="text-[#a30b15] font-bold">@lmss_n105_bot</span> dan tasdiqlash kodini oling!
+              Tasdiqlash kodi kiritilgan telefon raqamining telegram akkaunti orqali telegram bot: <span className="text-[#a30b15] font-bold">@lms_n105_backend_bot</span> dan tasdiqlash kodini oling!
             </p>
 
             <button 
