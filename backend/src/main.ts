@@ -7,6 +7,10 @@ import { join } from 'path';
 import * as express from "express"
 // import { redis } from './common/config/redis';
 
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled promise rejection (process kept alive):', reason);
+});
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
