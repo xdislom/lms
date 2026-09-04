@@ -35,7 +35,7 @@ import { PurchaseCourceModule } from './purchase-cource/purchase-cource.module';
     }),
 
     JwtModule.register({
-      secret: "shaptoli",
+      secret: process.env.JWT_SECRET,
       signOptions: {
         expiresIn: '7d',
       },
